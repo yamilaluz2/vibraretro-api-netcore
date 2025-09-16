@@ -1,0 +1,6 @@
+@api_VibraRetro_HostAddress = http://localhost:5029
+
+GET {{api_VibraRetro_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

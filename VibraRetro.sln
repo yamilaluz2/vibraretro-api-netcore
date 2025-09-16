@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "api-VibraRetro", "api-VibraRetro\api-VibraRetro.csproj", "{C9FFB3D8-33D5-41BD-916C-86307923B5BB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "entity_library", "entity_library\entity_library.csproj", "{D2024639-7ED8-4584-8859-B3ECFE0EF434}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dao_library", "dao_library\dao_library.csproj", "{EC53706E-F686-452F-B7ED-EAE51A4AF21A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C9FFB3D8-33D5-41BD-916C-86307923B5BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C9FFB3D8-33D5-41BD-916C-86307923B5BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C9FFB3D8-33D5-41BD-916C-86307923B5BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C9FFB3D8-33D5-41BD-916C-86307923B5BB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D2024639-7ED8-4584-8859-B3ECFE0EF434}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2024639-7ED8-4584-8859-B3ECFE0EF434}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2024639-7ED8-4584-8859-B3ECFE0EF434}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2024639-7ED8-4584-8859-B3ECFE0EF434}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EC53706E-F686-452F-B7ED-EAE51A4AF21A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC53706E-F686-452F-B7ED-EAE51A4AF21A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC53706E-F686-452F-B7ED-EAE51A4AF21A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC53706E-F686-452F-B7ED-EAE51A4AF21A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
