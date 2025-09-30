@@ -1,23 +1,27 @@
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing.Internal;
 
-namespace api_practicando.Controllers;
+namespace api_VibraRetro.Controllers;
 
 [ApiController]
 [Route("[controller]")]
 public class UserController : ControllerBase
 {
 
-    private DAOFactory? df;
+    private DAOFactory df;
+    private Ifile image;
     private readonly ILogger<UserController> _logger;
 
-    public UserController(ILogger<UserController> logger, DAOFactory df)
+    public UserController(ILogger<UserController> logger, DAOFactory df, Ifile image)
     {
         _logger = logger;
         this.df = df;
+        this.image = image;
     }
 
 
@@ -113,7 +117,9 @@ public class UserController : ControllerBase
 
     public IActionResult Update([FromForm] PutUserDTORequest request)
     {
-        User usuario = this.df.buscarUserId().ExisteId(21);
+        User usuario = this.df.buscarUserId().ExisteId(request.id);
+        Console.WriteLine("Antes de modificar: " + usuario.Avatar);
+        string rute = "wwwroot/uploads";
 
         if (usuario == null)
         {
@@ -141,15 +147,37 @@ public class UserController : ControllerBase
             usuario.Password = request.password;
         }
 
-        /*if (request.avatar != null)
+        if (request.avatar != null)
         {
-            string ruta = 
+            usuario.Avatar = "hola sofiaqueeeen";
+            Console.WriteLine("Después de modificar: " + usuario.Avatar);
+           
+
+            /*string pathAvatar = this.image.GetPath(request.avatar, rute);
+            usuario.Avatar = "hola te vas a guardar ahora";
+            try
+            {
+                this.image.SaveFile(request.avatar, pathAvatar);
+                
+            }
+            catch
+            {
+                return BadRequest(new { message = "usuario no encontrado" });
+            }*/
         }
 
         if (request.coverPhoto != null)
         {
-            usuario.CoverPhoto = request.coverPhoto;
-        }*/
+            string pathCoverPic = this.image.GetPath(request.coverPhoto, rute);
+            try
+            {
+                this.image.SaveFile(request.coverPhoto, pathCoverPic);
+            }
+            catch
+            {
+                return BadRequest(new { message = "usuario no encontrado" });
+            }
+        }
 
         this.df.update().save(usuario);
 

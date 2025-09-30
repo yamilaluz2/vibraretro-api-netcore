@@ -32,6 +32,7 @@ public class EFDAOUser : DAOUser
 
     public void save(User usuario)
     {
+        dbContext.Users.Update(usuario);
         dbContext.SaveChanges();
     }
 
