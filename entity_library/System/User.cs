@@ -3,8 +3,8 @@ public class User : Person
     private string userName = "";
     public string UserName { get { return userName; } set { userName = value; } }
 
-    private string password = "";
-    public string Password { get { return password; } set { password = value; } }
+    private string passwordHash = "";
+    public string PasswordHash { get { return passwordHash; } private set { passwordHash = value; } }
 
     private string? avatar = "";
     public string? Avatar { get { return avatar; } set { avatar = value; } }
@@ -14,7 +14,20 @@ public class User : Person
 
     private Rol? rolUser;
 
-    public Rol? RolUser{get { return rolUser; } set{ rolUser = value; }}
+    public Rol? RolUser { get { return rolUser; } set { rolUser = value; } }
+
+
+
+    public void SetPassword(string password)
+    {
+        this.PasswordHash = BCrypt.Net.BCrypt.HashPassword(password);
+    }
+
+    
+    public bool VerifyPassword(string password)
+    {
+        return BCrypt.Net.BCrypt.Verify(password, PasswordHash);
+    }
 
 
 

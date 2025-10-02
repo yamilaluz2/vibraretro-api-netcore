@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing.Internal;
+using BCrypt.Net;
 
 namespace api_VibraRetro.Controllers;
 
@@ -51,16 +52,19 @@ public class UserController : ControllerBase
             return BadRequest("el email no cumple con los parametros");
         }
 
-        User persona = new User
+       User usuario = new User
         {
             Name = request.name,
             Mail = request.mail,
-            UserName = request.userName,
-            Password = request.password
+            UserName = request.userName
+            
         };
 
+        usuario.SetPassword(request.password);
 
-        bool respuesta = this.df.CreateUser().create(persona);
+        Console.WriteLine($"Hash guardado: {usuario.PasswordHash}");
+
+        bool respuesta = this.df.CreateUser().create(usuario);
 
         if (respuesta)
         {
@@ -102,7 +106,8 @@ public class UserController : ControllerBase
         {
             return BadRequest(new { message = "usuario no encontrado" });
         }
-        if (usuario.Password != request.password)
+        bool resultado = usuario.VerifyPassword(request.password);
+        if (!resultado)
         {
             return BadRequest(new { error = "contraseña incorrecta" });
         }
@@ -118,7 +123,6 @@ public class UserController : ControllerBase
     public IActionResult Update([FromForm] PutUserDTORequest request)
     {
         User usuario = this.df.buscarUserId().ExisteId(request.id);
-        Console.WriteLine("Antes de modificar: " + usuario.Avatar);
         string rute = "wwwroot/uploads";
 
         if (usuario == null)
@@ -143,27 +147,24 @@ public class UserController : ControllerBase
         }
 
         if (request.password != null)
-        {
-            usuario.Password = request.password;
+        {                       
+            usuario.SetPassword(request.password);
         }
 
         if (request.avatar != null)
-        {
-            usuario.Avatar = "hola sofiaqueeeen";
-            Console.WriteLine("Después de modificar: " + usuario.Avatar);
-           
+        {        
+            string pathAvatar = this.image.GetPath(request.avatar, rute);
 
-            /*string pathAvatar = this.image.GetPath(request.avatar, rute);
-            usuario.Avatar = "hola te vas a guardar ahora";
             try
             {
                 this.image.SaveFile(request.avatar, pathAvatar);
+                usuario.Avatar =pathAvatar;
                 
             }
             catch
             {
                 return BadRequest(new { message = "usuario no encontrado" });
-            }*/
+            }
         }
 
         if (request.coverPhoto != null)
@@ -172,6 +173,7 @@ public class UserController : ControllerBase
             try
             {
                 this.image.SaveFile(request.coverPhoto, pathCoverPic);
+                usuario.CoverPhoto =pathCoverPic;
             }
             catch
             {
@@ -198,7 +200,7 @@ public class UserController : ControllerBase
 
 
         if (request.name == usuario.Name && request.mail == usuario.Mail &&
-        request.userName == usuario.UserName && request.password == usuario.Password)
+        request.userName == usuario.UserName && request.password == usuario.PasswordHash)
         {
             this.df.Delete().DeleteUser(usuario);
             return Ok(new { message = "usuario Eliminado correctamente" });
@@ -238,17 +240,3 @@ public class UserController : ControllerBase
 
 
 
-/*User NewUser = new User
-        {
-            Name = request.name,
-            Mail = request.mail,
-            UserName = request.userName,
-            Password = request.password
-
-        };
-
-        return Ok(new GetUserDTOResponse
-        {
-            nombre = NewUser.Name,
-            email = NewUser.Mail
-        });*/
