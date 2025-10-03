@@ -1,6 +1,6 @@
 public interface DAOUser
 {
-    public bool create(User value);
+    public void Create(User value);
     public User ExisteMail(string value);
 
     public User ExisteId(int value);

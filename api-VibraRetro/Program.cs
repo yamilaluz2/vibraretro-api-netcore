@@ -18,8 +18,7 @@ builder.Services.AddDbContext<AppDbContext>(option =>
     option.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
 builder.Services.AddScoped<DAOFactory, EFDAOFactory>();
-builder.Services.AddScoped<Ifile, Photo>();
-
+builder.Services.AddScoped<IFile, Photo>();
 
 builder.Services.AddCors(options =>
 {

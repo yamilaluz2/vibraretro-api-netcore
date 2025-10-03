@@ -15,85 +15,57 @@ public class UserController : ControllerBase
 {
 
     private DAOFactory df;
-    private Ifile image;
+    private IFile image;
     private readonly ILogger<UserController> _logger;
 
-    public UserController(ILogger<UserController> logger, DAOFactory df, Ifile image)
+    public UserController(ILogger<UserController> logger, DAOFactory df, IFile image)
     {
         _logger = logger;
         this.df = df;
         this.image = image;
     }
 
-
-
-
-
-    [HttpPost("register")]
+    [HttpPost()]
     public IActionResult Register([FromBody] PostUserDTORequest request)
     {
-        if (request.name == null &&
-            request.mail == null &&
-            request.userName == null &&
-            request.password == null)
+        try
         {
-            return BadRequest("Faltan campos obligatorios");
+            validateUser(request);
+            
+            User usuario = new User
+            {
+                Name = request.name,
+                Mail = request.mail,
+                UserName = request.userName
+            };
+
+            usuario.SetPassword(request.password);
+
+            this.df.CreateUser().Create(usuario);
+        }
+        catch (Exception exc)
+        {
+            return BadRequest(exc.Message);
         }
 
-        if (request.mail == null)
-        {
-            return BadRequest("falta email");
-        }
+        return Ok(new { message = "usuario creado correctamente" });
+    }
+
+    private void validateUser(PostUserDTORequest request)
+    {
+        //TODO: Eze, poner todos con IsNullOrEmpty.
+        if (String.IsNullOrEmpty(request.name)) throw new Exception("El nombre es un dato obligatorio");
+        if (request.mail == null) throw new Exception("El mail es un dato obligatorio");
+        if (request.userName == null) throw new Exception("El user name es un dato obligatorio");
+        if (request.password == null) throw new Exception("El password es un dato obligatorio");
+        
         Regex regex = new Regex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$");
         bool IsValid = regex.IsMatch(request.mail);
 
         if (!IsValid)
         {
-            return BadRequest("el email no cumple con los parametros");
+            throw new Exception("el email no cumple con los parametros");
         }
-
-       User usuario = new User
-        {
-            Name = request.name,
-            Mail = request.mail,
-            UserName = request.userName
-            
-        };
-
-        usuario.SetPassword(request.password);
-
-        Console.WriteLine($"Hash guardado: {usuario.PasswordHash}");
-
-        bool respuesta = this.df.CreateUser().create(usuario);
-
-        if (respuesta)
-        {
-            return Ok(new { message = "usuario creado correctamente" });
-
-        }
-
-        return BadRequest("Error al cargar el usuario");
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     }
 
     [HttpPost("login")]
@@ -112,14 +84,9 @@ public class UserController : ControllerBase
             return BadRequest(new { error = "contraseña incorrecta" });
         }
         return Ok(new { message = "inicio de sesion correcto" });
-
     }
 
-
-
-
     [HttpPut("Update")]
-
     public IActionResult Update([FromForm] PutUserDTORequest request)
     {
         User usuario = this.df.buscarUserId().ExisteId(request.id);
@@ -129,7 +96,6 @@ public class UserController : ControllerBase
         {
             return BadRequest(new { message = "usuario no encontrado" });
         }
-
 
         if (request.name != null)
         {
@@ -153,13 +119,10 @@ public class UserController : ControllerBase
 
         if (request.avatar != null)
         {        
-            string pathAvatar = this.image.GetPath(request.avatar, rute);
-
             try
             {
-                this.image.SaveFile(request.avatar, pathAvatar);
-                usuario.Avatar =pathAvatar;
-                
+                string pathAvatar = this.image.Save(request.avatar, rute);
+                usuario.Avatar = pathAvatar;
             }
             catch
             {
@@ -169,11 +132,10 @@ public class UserController : ControllerBase
 
         if (request.coverPhoto != null)
         {
-            string pathCoverPic = this.image.GetPath(request.coverPhoto, rute);
             try
             {
-                this.image.SaveFile(request.coverPhoto, pathCoverPic);
-                usuario.CoverPhoto =pathCoverPic;
+                string pathCoverPic = this.image.Save(request.coverPhoto, rute);
+                usuario.CoverPhoto = pathCoverPic;
             }
             catch
             {
@@ -198,7 +160,6 @@ public class UserController : ControllerBase
             return BadRequest(new { message = "usuario no encontrado" });
         }
 
-
         if (request.name == usuario.Name && request.mail == usuario.Mail &&
         request.userName == usuario.UserName && request.password == usuario.PasswordHash)
         {
@@ -206,26 +167,8 @@ public class UserController : ControllerBase
             return Ok(new { message = "usuario Eliminado correctamente" });
         }
 
-        return BadRequest(new { message = "No se pudo eliminar el usuario" });
-        
-           
-
-        
-
-        
-
-        
-
-
-        
-
-        
+        return BadRequest(new { message = "No se pudo eliminar el usuario" });       
     }
-    
-    
-
-
-
 };
 
 

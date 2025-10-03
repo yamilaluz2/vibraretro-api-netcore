@@ -8,13 +8,10 @@ public class EFDAOUser : DAOUser
         this.dbContext = dbContext;
     }
 
-    public bool create(User value)
+    public void Create(User value)
     {
         dbContext.Users.Add(value);
         dbContext.SaveChanges();
-        return true;
-
-
     }
 
     public User ExisteMail(string value)
