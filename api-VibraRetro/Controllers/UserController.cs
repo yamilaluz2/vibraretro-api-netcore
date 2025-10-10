@@ -15,14 +15,16 @@ public class UserController : ControllerBase
 {
 
     private DAOFactory df;
-    private Ifile image;
+    private IFile image;
+    private IToken tokenService;
     private readonly ILogger<UserController> _logger;
 
-    public UserController(ILogger<UserController> logger, DAOFactory df, Ifile image)
+    public UserController(ILogger<UserController> logger, DAOFactory df, IFile image, IToken token)
     {
         _logger = logger;
         this.df = df;
         this.image = image;
+        this.tokenService = token;
     }
 
 
@@ -98,7 +100,7 @@ public class UserController : ControllerBase
 
     [HttpPost("login")]
 
-    public IActionResult Login([FromBody] GetLoginRequest request)
+    public IActionResult Login([FromBody] PostLoginDTORequest request)
     {
         User usuario = this.df.buscarUserMail().ExisteMail(request.mail);
 
@@ -111,8 +113,13 @@ public class UserController : ControllerBase
         {
             return BadRequest(new { error = "contraseña incorrecta" });
         }
-        return Ok(new { message = "inicio de sesion correcto" });
-
+        string tokenUser = this.tokenService.GenerateToken(usuario);
+        
+        return Ok(new PostLoginDTOResponse
+        {
+            token = tokenUser
+        });
+       
     }
 
 

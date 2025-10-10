@@ -18,7 +18,8 @@ builder.Services.AddDbContext<AppDbContext>(option =>
     option.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
 builder.Services.AddScoped<DAOFactory, EFDAOFactory>();
-builder.Services.AddScoped<Ifile, Photo>();
+builder.Services.AddScoped<IFile, Photo>();
+builder.Services.AddScoped<IToken, JwtToken>();
 
 
 builder.Services.AddCors(options =>
@@ -32,7 +33,6 @@ builder.Services.AddCors(options =>
 });
 
 var jwtSettings = builder.Configuration.GetSection("Jwt");
-
 
 builder.Services.AddAuthentication(options =>
 {
@@ -57,7 +57,6 @@ builder.Services.AddAuthentication(options =>
 
 
 
-
 var app = builder.Build();
 
 app.UseStaticFiles(); 
@@ -72,6 +71,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseCors("PermitirFrontend");/**/
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

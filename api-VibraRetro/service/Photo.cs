@@ -1,4 +1,4 @@
-public class Photo : Ifile
+public class Photo : IFile
 {
     public string GetPath(IFormFile archivo, string rute)
     {

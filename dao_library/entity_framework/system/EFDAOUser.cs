@@ -10,7 +10,7 @@ public class EFDAOUser : DAOUser
 
     public bool create(User value)
     {
-        dbContext.Users.Add(value);
+        dbContext.Persons.Add(value);
         dbContext.SaveChanges();
         return true;
 
