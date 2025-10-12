@@ -9,6 +9,9 @@ public interface DAOUser
 
     public void DeleteUser(User value);
 
+    public List<User> buscarUsuario();
+    
+
 
     
 }

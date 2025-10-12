@@ -28,6 +28,11 @@ public class EFDAOFactory : DAOFactory
        return new EFDAOUser(AppDbContext);
     }
 
+    public DAOUser GetUsers()
+    {
+        return new EFDAOUser(AppDbContext);
+    }
+
     public DAOUser update()
     {
         return new EFDAOUser(AppDbContext);

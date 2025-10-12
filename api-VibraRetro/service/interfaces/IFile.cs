@@ -1,6 +1,6 @@
 public interface IFile
 {
-    string GetPath(IFormFile archivo, string rute);
+    (string,string) GetPath(IFormFile archivo, string rute);
     void SaveFile(IFormFile archivo, string ruteDef);
 
 }

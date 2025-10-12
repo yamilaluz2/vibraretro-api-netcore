@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing.Internal;
 using BCrypt.Net;
+using Microsoft.AspNetCore.Authorization;
 
 namespace api_VibraRetro.Controllers;
 
@@ -124,12 +125,22 @@ public class UserController : ControllerBase
 
 
 
-
+    [Authorize]
     [HttpPut("Update")]
 
     public IActionResult Update([FromForm] PutUserDTORequest request)
     {
-        User usuario = this.df.buscarUserId().ExisteId(request.id);
+        var userIdString = User.FindFirst("UserId")?.Value;
+
+        if (string.IsNullOrEmpty(userIdString))
+        {
+            return Unauthorized("Token inválido o sin UserId.");
+        }
+
+        int userId = int.Parse(userIdString);
+
+        User usuario = this.df.buscarUserId().ExisteId(userId);
+        string host = "http://localhost:5029";
         string rute = "wwwroot/uploads";
 
         if (usuario == null)
@@ -160,12 +171,12 @@ public class UserController : ControllerBase
 
         if (request.avatar != null)
         {        
-            string pathAvatar = this.image.GetPath(request.avatar, rute);
+            (string PathCompleto, string nombreArchivo) = this.image.GetPath(request.avatar, rute);
 
             try
             {
-                this.image.SaveFile(request.avatar, pathAvatar);
-                usuario.Avatar =pathAvatar;
+                this.image.SaveFile(request.avatar, PathCompleto);
+                usuario.Avatar =$"{host}/uploads/{nombreArchivo}";
                 
             }
             catch
@@ -176,11 +187,11 @@ public class UserController : ControllerBase
 
         if (request.coverPhoto != null)
         {
-            string pathCoverPic = this.image.GetPath(request.coverPhoto, rute);
+            (string PathCompleto, string nombreArchivo) = this.image.GetPath(request.coverPhoto, rute);
             try
             {
-                this.image.SaveFile(request.coverPhoto, pathCoverPic);
-                usuario.CoverPhoto =pathCoverPic;
+                this.image.SaveFile(request.coverPhoto, PathCompleto);
+                usuario.CoverPhoto =nombreArchivo;
             }
             catch
             {
@@ -214,24 +225,20 @@ public class UserController : ControllerBase
         }
 
         return BadRequest(new { message = "No se pudo eliminar el usuario" });
-        
-           
-
-        
-
-        
-
-        
 
 
-        
 
-        
+
+
+
+
+
+
+
+
+
+
     }
-    
-    
-
-
 
 };
 

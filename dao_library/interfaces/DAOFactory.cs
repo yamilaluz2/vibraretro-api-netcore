@@ -9,6 +9,10 @@ public interface DAOFactory
     DAOUser update();
 
     DAOUser Delete();
+    
+    DAOUser GetUsers();
+
+
 
 
     

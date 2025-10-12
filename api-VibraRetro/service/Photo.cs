@@ -1,10 +1,10 @@
 public class Photo : IFile
 {
-    public string GetPath(IFormFile archivo, string rute)
+    public (string,string) GetPath(IFormFile archivo, string rute)
     {
         string nombreArchivo = Guid.NewGuid().ToString() + Path.GetExtension(archivo.FileName);
         string pathCompleto = Path.Combine(rute, nombreArchivo);
-        return pathCompleto;
+        return (pathCompleto,nombreArchivo);
     }
 
     public void SaveFile(IFormFile archivo, string ruteDef)

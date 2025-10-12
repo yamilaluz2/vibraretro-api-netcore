@@ -1,3 +1,4 @@
+
 public class EFDAOUser : DAOUser
 {
 
@@ -41,5 +42,11 @@ public class EFDAOUser : DAOUser
         dbContext.Users.Remove(value);
         dbContext.SaveChanges();
         
+    }
+
+    public List<User> buscarUsuario()
+    {
+        List<User> usuarios = dbContext.Users.ToList();
+        return usuarios;
     }
 }
