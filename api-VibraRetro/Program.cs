@@ -47,8 +47,12 @@ builder.Services.AddSwaggerGen(c =>
 
 
 string connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<AppDbContext>(option =>
-    option.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseLazyLoadingProxies()          
+           .UseMySql(connectionString, ServerVersion.AutoDetect(connectionString))
+);
+
 
 builder.Services.AddScoped<DAOFactory, EFDAOFactory>();
 builder.Services.AddScoped<IFile, Photo>();

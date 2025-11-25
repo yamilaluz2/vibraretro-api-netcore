@@ -14,7 +14,7 @@ public class User : Person
 
     private Rol? rolUser;
 
-    public Rol? RolUser { get { return rolUser; } set { rolUser = value; } }
+    public virtual Rol? RolUser { get { return rolUser; } set { rolUser = value; } }
 
 
 

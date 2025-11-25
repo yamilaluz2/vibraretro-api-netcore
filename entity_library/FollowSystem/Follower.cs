@@ -4,10 +4,10 @@ public class Follower
     public int ID { get { return id; } set { this.id = value; } }
 
     private User? followerUser;
-    public User? FollowerUser { get { return followerUser; } set { this.followerUser = value; } }
+    public virtual User? FollowerUser { get { return followerUser; } set { this.followerUser = value; } }
     
     private User? followedUser;
-    public User? FollowedUser{get{ return followedUser; } set{ this.followedUser = value; }}
+    public virtual User? FollowedUser{get{ return followedUser; } set{ this.followedUser = value; }}
 
 
 }

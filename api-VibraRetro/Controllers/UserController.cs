@@ -55,12 +55,12 @@ public class UserController : ControllerBase
             return BadRequest("el email no cumple con los parametros");
         }
 
-       User usuario = new User
+        User usuario = new User
         {
             Name = request.name,
             Mail = request.mail,
             UserName = request.userName
-            
+
         };
 
         usuario.SetPassword(request.password);
@@ -78,26 +78,8 @@ public class UserController : ControllerBase
         return BadRequest("Error al cargar el usuario");
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     }
+    
 
     [HttpPost("login")]
 

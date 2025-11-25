@@ -9,8 +9,16 @@ public interface DAOFactory
     DAOUser update();
 
     DAOUser Delete();
-    
+
     DAOUser GetUsers();
+
+    DAOUser CreateRelationFollow();
+
+    DAOUser buscarRelacion();
+
+    DAOUser DeleteRelationFollow();
+
+    DAOUser filtrarUser();
 
 
 

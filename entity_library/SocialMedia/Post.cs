@@ -12,10 +12,10 @@ public class Post
     public string PostImage { get { return postImage; } set { postImage = value; } }
 
     private User? creator;
-    public User? Creator { get { return creator; } set { creator = value; } }
+    public virtual User? Creator { get { return creator; } set { creator = value; } }
 
     private List<Comment>? comments;
-    public List<Comment>? Comments { get { return comments; } set { comments = value; } }
+    public virtual List<Comment>? Comments { get { return comments; } set { comments = value; } }
     
      
 
