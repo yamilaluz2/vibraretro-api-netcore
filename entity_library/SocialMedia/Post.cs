@@ -16,6 +16,25 @@ public class Post
 
     private List<Comment>? comments;
     public virtual List<Comment>? Comments { get { return comments; } set { comments = value; } }
+
+    public int GetUserId()
+    {
+        if (this.Creator.Id == null)
+        {
+            return 0;
+        }
+        return this.Creator.Id;
+    }
+
+    public string GetUserName()
+    {
+        return this.Creator.UserName;
+    }
+
+    public string GetAvatar()
+    {
+        return this.Creator.Avatar;
+    }
     
      
 

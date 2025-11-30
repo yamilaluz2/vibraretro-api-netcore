@@ -20,6 +20,8 @@ public interface DAOFactory
 
     DAOUser filtrarUser();
 
+    DAOPost createPost();
+
 
 
 

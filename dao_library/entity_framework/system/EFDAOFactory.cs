@@ -22,6 +22,11 @@ public class EFDAOFactory : DAOFactory
         return new EFDAOUser(AppDbContext);
     }
 
+    public DAOPost createPost()
+    {
+        return new EFDAOPost(AppDbContext);
+    }
+
     public DAOUser CreateRelationFollow()
     {
         return new EFDAOUser(AppDbContext);

@@ -100,7 +100,8 @@ public class UserController : ControllerBase
         
         return Ok(new PostLoginDTOResponse
         {
-            token = tokenUser
+            token = tokenUser,
+            idUser = usuario.Id
         });
        
     }
@@ -173,7 +174,7 @@ public class UserController : ControllerBase
             try
             {
                 this.image.SaveFile(request.coverPhoto, PathCompleto);
-                usuario.CoverPhoto =nombreArchivo;
+                usuario.CoverPhoto =$"{host}/uploads/{nombreArchivo}";
             }
             catch
             {
@@ -208,19 +209,35 @@ public class UserController : ControllerBase
 
         return BadRequest(new { message = "No se pudo eliminar el usuario" });
 
+    }
 
+    [Authorize]
+    [HttpGet("miProfile")]
 
+    public IActionResult miProfile([FromQuery] int data)
+    {
+        var userIdString = User.FindFirst("UserId")?.Value;
 
+        if (string.IsNullOrEmpty(userIdString))
+        {
+            return Unauthorized("Token inválido o sin UserId.");
+        }
 
+        int userId = int.Parse(userIdString);
 
+        User usuario = this.df.buscarUserId().ExisteId(userId);
+        
 
-
-
-
-
-
+        return Ok(new getUserProfileDTOResponse
+        {
+            userName = usuario.UserName,
+            avatar = usuario.Avatar,
+            coverPhoto= usuario.CoverPhoto
+        });
 
     }
+
+    
 
 };
 

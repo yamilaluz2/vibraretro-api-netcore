@@ -20,7 +20,7 @@ public class User : Person
 
     public void SetPassword(string password)
     {
-        this.PasswordHash = BCrypt.Net.BCrypt.HashPassword(password);
+        this.PasswordHash = BCrypt.Net.BCrypt.HashPassword(password,workFactor: 10);
     }
 
     
