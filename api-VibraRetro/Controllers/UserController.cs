@@ -99,7 +99,7 @@ public class UserController : ControllerBase
 
         Console.WriteLine($"Hash guardado: {usuario.PasswordHash}");
 
-        bool respuesta = this.df.CreateUser().create(usuario);
+        bool respuesta = this.df.UserDAOFactory().create(usuario);
 
         if (respuesta)
         {
@@ -121,7 +121,7 @@ public class UserController : ControllerBase
 
     public IActionResult Login([FromBody] PostLoginDTORequest request)
     {
-        User usuario = this.df.buscarUserMail().ExisteMail(request.mail);
+        User usuario = this.df.UserDAOFactory().ExisteMail(request.mail);
 
         if (usuario == null)
         {
@@ -181,7 +181,7 @@ public class UserController : ControllerBase
 
         int userId = int.Parse(userIdString);
 
-        User usuario = this.df.buscarUserId().ExisteId(userId);
+        User usuario = this.df.UserDAOFactory().ExisteId(userId);
         string host = "http://localhost:5029";
         string rute = "wwwroot/uploads";
 
@@ -241,7 +241,7 @@ public class UserController : ControllerBase
             }
         }
 
-        this.df.update().save(usuario);
+        this.df.UserDAOFactory().save(usuario);
 
         return Ok(new getUserProfileDTOResponse
             {
@@ -256,7 +256,7 @@ public class UserController : ControllerBase
 
     public IActionResult Delete([FromBody] DeleteUserDTORequest request)
     {
-        User usuario = this.df.buscarUserId().ExisteId(request.id);
+        User usuario = this.df.UserDAOFactory().ExisteId(request.id);
 
         if (usuario == null)
         {
@@ -267,7 +267,7 @@ public class UserController : ControllerBase
         if (request.name == usuario.Name && request.mail == usuario.Mail &&
         request.userName == usuario.UserName && request.password == usuario.PasswordHash)
         {
-            this.df.Delete().DeleteUser(usuario);
+            this.df.UserDAOFactory().DeleteUser(usuario);
             return Ok(new { message = "usuario Eliminado correctamente" });
         }
 
@@ -289,7 +289,7 @@ public class UserController : ControllerBase
 
         int userId = int.Parse(userIdString);
 
-        User usuario = this.df.buscarUserId().ExisteId(userId);
+        User usuario = this.df.UserDAOFactory().ExisteId(userId);
         
 
         return Ok(new getUserProfileDTOResponse
@@ -316,7 +316,7 @@ public class UserController : ControllerBase
 
         int userId = int.Parse(userIdString);
 
-        int countUser = this.df.buscarUserId().CountUser(userId);
+        int countUser = this.df.UserDAOFactory().CountUser(userId);
         
 
         return Ok(new GetCountUserDTOResponse
@@ -341,12 +341,12 @@ public class UserController : ControllerBase
 
         int userId = int.Parse(userIdString);
 
-        int countUser = this.df.buscarUserId().CountUser(userId);
+        int countUser = this.df.UserDAOFactory().CountUser(userId);
 
         int pageSize = 10;
         
 
-        List<User> listUser= this.df.buscarUserId().GetUser(request.pageNumber,pageSize);
+        List<User> listUser= this.df.UserDAOFactory().GetUser(request.pageNumber,pageSize);
 
         var listaDTO = listUser.Select(u => new GetUserDashboardDTOResponse
         {

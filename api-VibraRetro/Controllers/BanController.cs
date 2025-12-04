@@ -32,8 +32,8 @@ public class BanController : ControllerBase
 
         int userId = int.Parse(userIdString);
 
-        User admin = this.df.buscarUserId().ExisteId(userId);
-        User user = this.df.buscarUserId().ExisteId(request.userId);
+        User admin = this.df.UserDAOFactory().ExisteId(userId);
+        User user = this.df.UserDAOFactory().ExisteId(request.userId);
         if (admin != null && user != null)
         {
             Ban banUser = new Ban
@@ -46,9 +46,9 @@ public class BanController : ControllerBase
 
             };
             user.State = true;
-            this.df.update().save(user);
+            this.df.UserDAOFactory().save(user);
             
-            this.df.CreateBan().CreateBanDAO(banUser);
+            this.df.BanDAOFactory().CreateBanDAO(banUser);
 
             return Ok(new CommonDTOResponse
             {

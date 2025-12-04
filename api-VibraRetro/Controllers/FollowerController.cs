@@ -46,14 +46,14 @@ public class FollowerController : ControllerBase
             return Ok("no se puede seguir a uno mismo");
         }
 
-        User usuarioSeguidor = this.df.buscarUserId().ExisteId(userId);
-        User usuarioseguido = this.df.buscarUserId().ExisteId(request.id);
+        User usuarioSeguidor = this.df.UserDAOFactory().ExisteId(userId);
+        User usuarioseguido = this.df.UserDAOFactory().ExisteId(request.id);
 
-        Follower? existRelation = this.df.buscarRelacion().existRelacion(userId, request.id);
+        Follower? existRelation = this.df.FollowDAOUser().existRelacion(userId, request.id);
 
         if (existRelation != null)
         {
-            this.df.DeleteRelationFollow().DeleteFollowUser(existRelation);
+            this.df.FollowDAOUser().DeleteFollowUser(existRelation);
             return Ok(new Unfollowresponse
             {
                 userId = request.id,
@@ -68,7 +68,7 @@ public class FollowerController : ControllerBase
             FollowedUser = usuarioseguido
         };
 
-        this.df.CreateRelationFollow().FollowUser(seguimiento);
+        this.df.FollowDAOUser().FollowUser(seguimiento);
 
         return Ok(new Unfollowresponse
             {
@@ -92,7 +92,7 @@ public class FollowerController : ControllerBase
 
         int userId = int.Parse(userIdString);
                
-        var listUser = this.df.filtrarUser().buscarUsername(userId, request.userName, request.filtro, request.pageNumber, request.pageSize);
+        var listUser = this.df.FollowDAOUser().buscarUsername(userId, request.userName, request.filtro, request.pageNumber, request.pageSize);
 
         var listaDto = listUser.Select(u => new FollowingDTOResponse
         {

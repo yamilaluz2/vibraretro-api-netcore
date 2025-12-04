@@ -63,7 +63,7 @@ public class PostController : ControllerBase
 
         }
 
-        User usuario = this.df.buscarUserId().ExisteId(userId); 
+        User usuario = this.df.UserDAOFactory().ExisteId(userId); 
 
         Post post = new Post
         {
@@ -73,7 +73,7 @@ public class PostController : ControllerBase
 
         };
 
-        this.df.createPost().CreatePost(post);
+        this.df.PostDAOFactory().CreatePost(post);
 
 
 
@@ -108,7 +108,7 @@ public class PostController : ControllerBase
 
             
 
-        List<Post> posts = this.df.createPost().GetPost(userId,request.pageNumber,request.pageSize,request.currenView); 
+        List<Post> posts = this.df.PostDAOFactory().GetPost(userId,request.pageNumber,request.pageSize,request.currenView); 
 
         List<GetPostDTOResponse> listPost = posts.Select(post => new GetPostDTOResponse
         {
@@ -143,7 +143,7 @@ public class PostController : ControllerBase
 
             
 
-        Post? post = this.df.createPost().GetPostId(request.idPost);
+        Post? post = this.df.PostDAOFactory().GetPostId(request.idPost);
 
         if (post!= null)
         {

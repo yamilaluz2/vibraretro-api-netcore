@@ -37,8 +37,8 @@ public class CommentController : ControllerBase
             return BadRequest("Faltan campos obligatorios");
         }
 
-        User usuario = this.df.buscarUserId().ExisteId(userId);
-        Post post = this.df.createPost().ExistPost(request.idPost);
+        User usuario = this.df.UserDAOFactory().ExisteId(userId);
+        Post post = this.df.PostDAOFactory().ExistPost(request.idPost);
         
         if (usuario != null && post != null){
 
@@ -48,7 +48,7 @@ public class CommentController : ControllerBase
                 Post= post
                 
             };
-            this.df.CreateComment().CreateComment(comment);
+            this.df.CommentDAOFactory().CreateComment(comment);
             return Ok(new PostCommentDTOResponse
             {
                 idOwner= comment.GetUserId(), 
@@ -80,7 +80,7 @@ public class CommentController : ControllerBase
 
         int userId = int.Parse(userIdString);
 
-        List<Comment> comments = this.df.CreateComment().GetComment(request.idPost, request.pageNumber, request.pageSize); 
+        List<Comment> comments = this.df.CommentDAOFactory().GetComment(request.idPost, request.pageNumber, request.pageSize); 
 
         List<GetCommentDTOResponse> listComment = comments.Select(comment => new GetCommentDTOResponse
         {

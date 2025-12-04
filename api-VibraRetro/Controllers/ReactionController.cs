@@ -39,26 +39,26 @@ public class ReactionController : ControllerBase
             return BadRequest("Tipo de reaccion inválida.");
         }
 
-        User usuario = this.df.buscarUserId().ExisteId(userId);
+        User usuario = this.df.UserDAOFactory().ExisteId(userId);
         if (usuario == null)
         {
             return BadRequest("usuario no encontrado");
         }
                
-        Post post = df.createPost().ExistPost(request.idPost);
+        Post post = df.PostDAOFactory().ExistPost(request.idPost);
         if (post == null)
         {
             return BadRequest("no Existe post");
         }
 
-        Reaction? existingReaction = df.createReaction().ExistReaction(userId,request.idPost);
+        Reaction? existingReaction = df.ReactionDAOFactory().ExistReaction(userId,request.idPost);
 
         if(existingReaction != null)
         {
 
             if (existingReaction.ReactionType == reactionType)
             {
-                df.createReaction().DeleteReaction(existingReaction);
+                df.ReactionDAOFactory().DeleteReaction(existingReaction);
 
                 return Ok(new PostLikeDTOResponse
                 {
@@ -70,7 +70,7 @@ public class ReactionController : ControllerBase
             }
 
         
-            df.createReaction().DeleteReaction(existingReaction);
+            df.ReactionDAOFactory().DeleteReaction(existingReaction);
             
         }
 
@@ -81,13 +81,14 @@ public class ReactionController : ControllerBase
                 ReactionType= reactionType
             };
 
-        df.createReaction().ApplyReaction(likePost);
+        df.ReactionDAOFactory().ApplyReaction(likePost);
         
         return Ok(new PostLikeDTOResponse
             {
                 reactionType = reactionType.ToString(),
                 countLove = post.GetCountLike(),
-                countAngry = post.GetCountAngry()
+                countAngry = post.GetCountAngry(),
+                userHasReacted= true
             });     
 
     }
