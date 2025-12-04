@@ -1,3 +1,5 @@
+using System.Dynamic;
+
 public class User : Person
 {
     private string userName = "";
@@ -15,6 +17,12 @@ public class User : Person
     private Rol? rolUser;
 
     public virtual Rol? RolUser { get { return rolUser; } set { rolUser = value; } }
+
+    private bool state;
+    public bool State { get; set; } = false;
+
+
+    
 
 
 

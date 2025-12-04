@@ -77,7 +77,18 @@ public class PostController : ControllerBase
 
 
 
-        return Ok(post);
+        return Ok(new GetPostDTOResponse
+        {
+            idOwner = post.GetUserId(), 
+            imgOwner = post.GetUserName(),
+            nameOwner= post.GetAvatar(),
+            body = post.Description,
+            image = post.PostImage,
+            countLove= post.GetCountLike(),
+            countAngry = post.GetCountAngry(),
+            countComments= post.GetCountComment(),
+            id = post.Id
+        });
 
     }
 
@@ -85,44 +96,80 @@ public class PostController : ControllerBase
     [Authorize]
     [HttpGet("GetPost")]
     public IActionResult getPost([FromQuery] GetPostDTORequest request)
+    {
+        var userIdString = User.FindFirst("UserId")?.Value;
+
+        if (string.IsNullOrEmpty(userIdString))
         {
-            var userIdString = User.FindFirst("UserId")?.Value;
+            return Unauthorized("Token inválido o sin UserId.");
+        }
 
-            if (string.IsNullOrEmpty(userIdString))
-            {
-                return Unauthorized("Token inválido o sin UserId.");
-            }
-
-            int userId = int.Parse(userIdString);
+        int userId = int.Parse(userIdString);
 
             
 
-            List<Post> posts = this.df.createPost().GetPost(userId,request.pageNumber,request.pageSize,request.currenView); 
+        List<Post> posts = this.df.createPost().GetPost(userId,request.pageNumber,request.pageSize,request.currenView); 
 
-            List<GetPostDTOResponse> listPost = posts.Select(post => new GetPostDTOResponse
+        List<GetPostDTOResponse> listPost = posts.Select(post => new GetPostDTOResponse
+        {
+            idOwner = post.GetUserId(), 
+            imgOwner = post.GetUserName(),
+            nameOwner= post.GetAvatar(),
+            body = post.Description,
+            image = post.PostImage,
+            countLove= post.GetCountLike(),
+            countAngry = post.GetCountAngry(),
+            countComments= post.GetCountComment(),
+            id = post.Id
+        }).ToList();
+
+
+        return Ok(listPost);
+    }
+
+
+    [Authorize]
+    [HttpGet("GetPostId")]
+    public IActionResult getPostId([FromQuery] GetPostIdDTORequest request)
+    {
+        var userIdString = User.FindFirst("UserId")?.Value;
+
+        if (string.IsNullOrEmpty(userIdString))
+        {
+            return Unauthorized("Token inválido o sin UserId.");
+        }
+
+        int userId = int.Parse(userIdString);
+
+            
+
+        Post? post = this.df.createPost().GetPostId(request.idPost);
+
+        if (post!= null)
+        {
+            GetPostDTOResponse postDTO = new GetPostDTOResponse
             {
                 idOwner = post.GetUserId(), 
                 imgOwner = post.GetUserName(),
                 nameOwner= post.GetAvatar(),
                 body = post.Description,
                 image = post.PostImage,
-                countLove= post.Id,
-                countAngry = post.Id,
-                countComments= post.Id,
+                countLove= post.GetCountLike(),
+                countAngry = post.GetCountAngry(),
+                countComments= post.GetCountComment(),
                 id = post.Id
-            }).ToList();
-
-
-            return Ok(listPost);
-
-
-            
-            
-
-            
-
+            };
+            return Ok(postDTO); 
 
         }
+
+        return BadRequest("no hay post");
+        
+            
+    }
+
+
+
 
 };
 

@@ -13,7 +13,8 @@ public class EFDAOUser : DAOUser
     {
         dbContext.Persons.Add(value);
         dbContext.SaveChanges();
-        return true;
+        bool isUser = dbContext.Users.Any(u => u.Mail == value.Mail);
+        return isUser;
 
 
     }
@@ -24,7 +25,7 @@ public class EFDAOUser : DAOUser
         return usuario;
     }
 
-    public User ExisteId(int value)
+    public User? ExisteId(int value)
     {
         User? usuario = dbContext.Users.FirstOrDefault(user => user.Id == value);
         return usuario;
@@ -114,5 +115,20 @@ public class EFDAOUser : DAOUser
         
     }
 
-    
+    public int CountUser(int userId)
+    {
+        int totalUser = dbContext.Users.Count();
+        return totalUser;
+    }
+
+    public List<User> GetUser(int pageNumber, int pageSize)
+    {
+        List<User> usuarios = dbContext.Users
+            .OrderBy(u => u.UserName)
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToList();
+
+        return usuarios;
+    }
 }

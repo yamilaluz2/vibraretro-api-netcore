@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore.Migrations.Operations;
+
 public interface DAOFactory
 {
     DAOUser CreateUser();
@@ -21,6 +23,12 @@ public interface DAOFactory
     DAOUser filtrarUser();
 
     DAOPost createPost();
+
+    DAOReaction createReaction();
+
+    DAOComment CreateComment();
+
+    DAOBan CreateBan();
 
 
 

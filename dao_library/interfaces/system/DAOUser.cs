@@ -18,21 +18,6 @@ public interface DAOUser
     public void DeleteFollowUser(Follower idRelacion);
 
     public List<DTOUserFollowerResponse> buscarUsername(int userId, string? userName, string filtro, int pageNumber, int pageSize);
-
-    
-
-
-
-    
-
-
-
-    
-
-
-    
-    
-
-
-    
+    int CountUser(int userId);
+    List<User> GetUser(int pageNumber, int pageSize);
 }

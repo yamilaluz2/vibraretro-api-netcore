@@ -61,13 +61,15 @@ builder.Services.AddScoped<IToken, JwtToken>();
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("PermitirFrontend", policy =>
+    options.AddPolicy("Frontend", policy =>
     {
-        policy.WithOrigins("http://127.0.0.1:5500") // origen del frontend
+        policy.WithOrigins("http://127.0.0.1:5500", "http://localhost:3000")
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
 });
+
+
 
 var jwtSettings = builder.Configuration.GetSection("Jwt");
 
@@ -107,7 +109,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseCors("PermitirFrontend");/**/
+app.UseCors("Frontend");
+
+
 
 app.UseAuthentication();
 

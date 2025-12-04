@@ -9,6 +9,9 @@ public class Reaction
     private Post? posts;
     public virtual Post? Posts { get { return posts; } set { posts = value; } }
 
+    private ReactionType reactionType{get;set;}
+    public virtual ReactionType ReactionType{ get {return reactionType;} set {reactionType=value;}}
+
     
 
 

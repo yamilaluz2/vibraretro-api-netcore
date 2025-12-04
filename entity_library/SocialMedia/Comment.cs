@@ -8,4 +8,26 @@ public class Comment
     
     private string description = "";
     public string Description { get { return description; } set { description = value; } }
+
+    private Post? post;
+    public virtual Post? Post { get { return post; } set { post = value; } }
+
+    public int GetUserId()
+    {
+        if (this.Creator.Id == null)
+        {
+            return 0;
+        }
+        return this.Creator.Id;
+    }
+
+    public string GetUserName()
+    {
+        return this.Creator.UserName;
+    }
+
+    public string GetAvatar()
+    {
+        return this.Creator.Avatar;
+    }
 }

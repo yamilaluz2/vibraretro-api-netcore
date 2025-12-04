@@ -15,6 +15,12 @@ public class EFDAOPost : DAOPost
 
     }
 
+    public Post ExistPost(int idPost)
+    {
+        Post? post = dbContext.Posts.FirstOrDefault(post => post.Id == idPost);
+        return post;
+    }
+
     public List<Post> GetPost(int userId, int pageNumber, int pageSize,string currenView)
     {
         if(currenView == "wall")
@@ -38,5 +44,11 @@ public class EFDAOPost : DAOPost
         return listPost;
         
         
+    }
+
+    public Post? GetPostId(int idPost)
+    {
+        Post? post = dbContext.Posts.FirstOrDefault(post => post.Id == idPost);
+        return post;
     }
 }

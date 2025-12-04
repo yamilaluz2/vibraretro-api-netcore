@@ -22,9 +22,24 @@ public class EFDAOFactory : DAOFactory
         return new EFDAOUser(AppDbContext);
     }
 
+    public DAOBan CreateBan()
+    {
+        return new EFDAOBan(AppDbContext);
+    }
+
+    public DAOComment CreateComment()
+    {
+        return new EFDAOComment(AppDbContext);
+    }
+
     public DAOPost createPost()
     {
         return new EFDAOPost(AppDbContext);
+    }
+
+    public DAOReaction createReaction()
+    {
+        return new EFDAOReaction(AppDbContext);
     }
 
     public DAOUser CreateRelationFollow()

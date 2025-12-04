@@ -17,6 +17,9 @@ public class Post
     private List<Comment>? comments;
     public virtual List<Comment>? Comments { get { return comments; } set { comments = value; } }
 
+    private List<Reaction>? reactions;
+    public virtual List<Reaction>? Reactions { get { return reactions; } set { reactions = value; } }
+
     public int GetUserId()
     {
         if (this.Creator.Id == null)
@@ -34,6 +37,39 @@ public class Post
     public string GetAvatar()
     {
         return this.Creator.Avatar;
+    }
+
+
+    public int GetCount( ReactionType reactionType)
+    {
+        if (this.Reactions == null)
+        return 0;
+
+        return this.Reactions.Count(r => r.ReactionType == reactionType);
+    }
+
+    public int GetCountLike()
+    {
+        if (this.Reactions == null)
+        return 0;
+
+        return this.Reactions.Count(r => r.ReactionType == ReactionType.Like);
+    }
+
+    public int GetCountAngry()
+    {
+        if (this.Reactions == null)
+        return 0;
+
+        return this.Reactions.Count(r => r.ReactionType == ReactionType.Angry);
+    }
+
+    public int GetCountComment()
+    {
+        if (this.Comments == null)
+        return 0;
+
+        return this.Comments.Count();
     }
     
      
