@@ -11,13 +11,6 @@ public interface DAOUser
 
     public List<User> buscarUsuario(int pageNumber, int pageSize);
 
-    public void FollowUser(Follower seguidor);
-
-    public Follower? existRelacion(int id, int idSeguidor);
-
-    public void DeleteFollowUser(Follower idRelacion);
-
-    public List<DTOUserFollowerResponse> buscarUsername(int userId, string? userName, string filtro, int pageNumber, int pageSize);
     int CountUser(int userId);
     List<User> GetUser(int pageNumber, int pageSize);
 }

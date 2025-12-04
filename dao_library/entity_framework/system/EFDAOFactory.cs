@@ -7,75 +7,36 @@ public class EFDAOFactory : DAOFactory
         this.AppDbContext = AppDbContext;
     }
 
-    public DAOUser buscarRelacion()
-    {
-        return new EFDAOUser(AppDbContext);
-    }
-
-    public DAOUser buscarUserId()
-    {
-        return new EFDAOUser(AppDbContext);
-    }
-
-    public DAOUser buscarUserMail()
-    {
-        return new EFDAOUser(AppDbContext);
-    }
-
-    public DAOBan CreateBan()
-    {
-        return new EFDAOBan(AppDbContext);
-    }
-
-    public DAOComment CreateComment()
-    {
-        return new EFDAOComment(AppDbContext);
-    }
-
-    public DAOPost createPost()
+    public DAOPost PostDAOFactory()
     {
         return new EFDAOPost(AppDbContext);
     }
 
-    public DAOReaction createReaction()
+
+    public DAOUser UserDAOFactory()
+    {
+        return new EFDAOUser(AppDbContext);
+    }
+
+    public DAOFollow FollowDAOUser()
+    {
+        return new EFDAOFollow(AppDbContext);
+    }
+
+    public DAOReaction ReactionDAOFactory()
     {
         return new EFDAOReaction(AppDbContext);
     }
 
-    public DAOUser CreateRelationFollow()
+    public DAOComment CommentDAOFactory()
     {
-        return new EFDAOUser(AppDbContext);
+        return new EFDAOComment(AppDbContext);
     }
 
-    public DAOUser CreateUser()
+    public DAOBan BanDAOFactory()
     {
-        return new EFDAOUser(AppDbContext);
-
+        return new EFDAOBan(AppDbContext);
     }
 
-    public DAOUser Delete()
-    {
-       return new EFDAOUser(AppDbContext);
-    }
-
-    public DAOUser DeleteRelationFollow()
-    {
-        return new EFDAOUser(AppDbContext);
-    }
-
-    public DAOUser filtrarUser()
-    {
-        return new EFDAOUser(AppDbContext);
-    }
-
-    public DAOUser GetUsers()
-    {
-        return new EFDAOUser(AppDbContext);
-    }
-
-    public DAOUser update()
-    {
-        return new EFDAOUser(AppDbContext);
-    }
     
 }
