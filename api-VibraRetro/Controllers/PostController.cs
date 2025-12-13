@@ -104,11 +104,11 @@ public class PostController : ControllerBase
             return Unauthorized("Token inválido o sin UserId.");
         }
 
-        int userId = int.Parse(userIdString);
+        int idUserLogged = int.Parse(userIdString);
 
             
 
-        List<Post> posts = this.df.PostDAOFactory().GetPost(userId,request.pageNumber,request.pageSize,request.currenView); 
+        List<Post> posts = this.df.PostDAOFactory().GetPost(idUserLogged,request.id,request.pageNumber,request.pageSize,request.currenView); 
 
         List<GetPostDTOResponse> listPost = posts.Select(post => new GetPostDTOResponse
         {

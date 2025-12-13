@@ -1,3 +1,5 @@
+using System.Security.Cryptography.X509Certificates;
+
 public class EFDAOFollow : DAOFollow
 {
 
@@ -31,6 +33,7 @@ public class EFDAOFollow : DAOFollow
     public List<DTOUserFollowerResponse> buscarUsername(int userId, string? userName, string filtro, int pageNumber, int pageSize)
     {
         var query = dbContext.Users.AsQueryable();
+        query = query.Where(u => u.Id != userId && u.RolUser.Name != "administrador");
 
         if (!string.IsNullOrEmpty(userName))
         query = query.Where(u => u.UserName.StartsWith(userName));

@@ -289,12 +289,21 @@ public class UserController : ControllerBase
 
         int userId = int.Parse(userIdString);
 
-        User usuario = this.df.UserDAOFactory().ExisteId(userId);
+        User usuario = this.df.UserDAOFactory().ExisteId(data);
+        Follower? follower = this.df.FollowDAOUser().existRelacion(userId,data);
+        bool isFollowing = false;
+
+        if (follower != null)
+        {
+            isFollowing = true;
+        }
         
 
         return Ok(new getUserProfileDTOResponse
         {
+            id=data,
             userName = usuario.UserName,
+            isFollowing= isFollowing,
             avatar = usuario.Avatar,
             coverPhoto= usuario.CoverPhoto
         });
