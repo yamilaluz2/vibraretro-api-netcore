@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing.Internal;
 using BCrypt.Net;
 using Microsoft.AspNetCore.Authorization;
+using api_VibraRetro.service.interfaces;
 
 namespace api_VibraRetro.Controllers;
 
@@ -20,12 +21,21 @@ public class UserController : ControllerBase
     private IToken tokenService;
     private readonly ILogger<UserController> _logger;
 
-    public UserController(ILogger<UserController> logger, DAOFactory df, IFile image, IToken token)
+    private readonly IUserCounter _counter;
+
+    public UserController(
+        ILogger<UserController> logger,
+        DAOFactory df,
+        IFile image,
+        IToken token,
+        IUserCounter counter
+    )
     {
         _logger = logger;
         this.df = df;
         this.image = image;
         this.tokenService = token;
+        _counter = counter;
     }
 
 

@@ -2,6 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using api_VibraRetro.service;
+using api_VibraRetro.service.interfaces;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -57,6 +59,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped<DAOFactory, EFDAOFactory>();
 builder.Services.AddScoped<IFile, Photo>();
 builder.Services.AddScoped<IToken, JwtToken>();
+
+builder.Services.AddSingleton<IUserCounter, UserCounter>();
 
 
 builder.Services.AddCors(options =>
