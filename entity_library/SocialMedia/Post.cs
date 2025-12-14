@@ -11,8 +11,8 @@ public class Post
     private string postImage = "";
     public string PostImage { get { return postImage; } set { postImage = value; } }
 
-    private User? creator;
-    public virtual User? Creator { get { return creator; } set { creator = value; } }
+    private  User creator=null!;
+    public required virtual User Creator { get { return creator; } set { creator = value; } }
 
     private List<Comment>? comments;
     public virtual List<Comment>? Comments { get { return comments; } set { comments = value; } }
@@ -36,7 +36,12 @@ public class Post
 
     public string GetAvatar()
     {
-        return this.Creator.Avatar;
+        string? avatar = this.Creator.Avatar;
+        if (avatar == null)
+        {
+            return "";
+        }
+        return avatar;
     }
 
 

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace dao_library.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251213231423_cascada")]
+    partial class cascada
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -253,8 +256,7 @@ namespace dao_library.Migrations
                 {
                     b.HasOne("User", "Creator")
                         .WithMany()
-                        .HasForeignKey("CreatorId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("CreatorId");
 
                     b.HasOne("Post", "Post")
                         .WithMany("Comments")
@@ -270,13 +272,11 @@ namespace dao_library.Migrations
                 {
                     b.HasOne("User", "FollowedUser")
                         .WithMany()
-                        .HasForeignKey("FollowedUserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("FollowedUserId");
 
                     b.HasOne("User", "FollowerUser")
                         .WithMany()
-                        .HasForeignKey("FollowerUserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("FollowerUserId");
 
                     b.Navigation("FollowedUser");
 
@@ -298,8 +298,7 @@ namespace dao_library.Migrations
                 {
                     b.HasOne("User", "Creator")
                         .WithMany()
-                        .HasForeignKey("CreatorId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("CreatorId");
 
                     b.HasOne("Post", "Posts")
                         .WithMany("Reactions")

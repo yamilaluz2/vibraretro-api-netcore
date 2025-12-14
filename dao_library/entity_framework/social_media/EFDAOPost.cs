@@ -15,6 +15,12 @@ public class EFDAOPost : DAOPost
 
     }
 
+    public void Save(Post post)
+    {
+        dbContext.Posts.Update(post);
+        dbContext.SaveChanges();
+    }
+
     public Post ExistPost(int idPost)
     {
         Post? post = dbContext.Posts.FirstOrDefault(post => post.Id == idPost);
@@ -69,5 +75,19 @@ public class EFDAOPost : DAOPost
     {
         Post? post = dbContext.Posts.FirstOrDefault(post => post.Id == idPost);
         return post;
+    }
+
+    public bool DeletePost(int idUser,int idPost)
+    {
+        Post? post = dbContext.Posts.FirstOrDefault(p => p.Id == idPost && p.Creator.Id == idUser);
+
+        if (post == null)
+        {
+            return false;
+        }
+        
+        dbContext.Posts.Remove(post);
+        dbContext.SaveChanges();
+        return true;
     }
 }

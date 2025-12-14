@@ -255,6 +255,7 @@ public class UserController : ControllerBase
 
         return Ok(new getUserProfileDTOResponse
             {
+            id= userId,
             userName = usuario.UserName,
             avatar = usuario.Avatar,
             coverPhoto= usuario.CoverPhoto
@@ -262,26 +263,51 @@ public class UserController : ControllerBase
 
     }
 
-    [HttpPut("Delete")]
+
+    [Authorize]
+    [HttpDelete("Delete")]
 
     public IActionResult Delete([FromBody] DeleteUserDTORequest request)
     {
-        User usuario = this.df.UserDAOFactory().ExisteId(request.id);
+        var userIdString = User.FindFirst("UserId")?.Value;
+
+        if (string.IsNullOrEmpty(userIdString))
+        {
+            return Unauthorized("Token inválido o sin UserId.");
+        }
+
+        int userId = int.Parse(userIdString);
+
+        User usuario = this.df.UserDAOFactory().ExisteId(userId);
 
         if (usuario == null)
         {
-            return BadRequest(new { message = "usuario no encontrado" });
+            return BadRequest(new CommonDTOResponse
+            {
+                success= false,
+                message = "usuario no encontrado"
+            });
         }
 
+        bool resultado = usuario.VerifyPassword(request.password);
 
         if (request.name == usuario.Name && request.mail == usuario.Mail &&
-        request.userName == usuario.UserName && request.password == usuario.PasswordHash)
+        request.userName == usuario.UserName && resultado)
         {
             this.df.UserDAOFactory().DeleteUser(usuario);
-            return Ok(new { message = "usuario Eliminado correctamente" });
+
+            return Ok(new CommonDTOResponse
+            {
+                success= true,
+                message = "usuario Eliminado correctamente"
+            });
         }
 
-        return BadRequest(new { message = "No se pudo eliminar el usuario" });
+        return BadRequest(new CommonDTOResponse
+        {
+            success= false,
+            message="Los datos ingresados no coinciden."
+        });
 
     }
 

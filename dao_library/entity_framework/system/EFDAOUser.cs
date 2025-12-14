@@ -38,11 +38,12 @@ public class EFDAOUser : DAOUser
         dbContext.SaveChanges();
     }
 
-    public void DeleteUser(User value)
+    public void DeleteUser(User user)
     {
-        dbContext.Users.Remove(value);
-        dbContext.SaveChanges();
         
+        dbContext.Users.Remove(user);
+        dbContext.SaveChanges();
+
     }
 
     public List<User> buscarUsuario(int pageNumber, int pageSize)

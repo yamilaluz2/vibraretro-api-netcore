@@ -5,5 +5,4 @@ public class DeleteUserDTORequest
     public required string userName { get; set; }
     public required string password { get; set; }
 
-    public required int id { get; set; }
 }

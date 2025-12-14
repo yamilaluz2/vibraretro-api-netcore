@@ -37,7 +37,7 @@ public class PostController : ControllerBase
         int userId = int.Parse(userIdString);
 
         string host = "http://localhost:5029";
-        string rute = "wwwroot/post";
+        string rute = "wwwroot/photo/post";
         string? UrlImagePost= null;
 
         if (request.description == null &&
@@ -53,7 +53,7 @@ public class PostController : ControllerBase
             try
             {
                 this.image.SaveFile(request.postImage, PathCompleto);
-                UrlImagePost =$"{host}/post/{nombreArchivo}";
+                UrlImagePost =$"{host}/photo/post/{nombreArchivo}";
                 
             }
             catch
@@ -168,7 +168,116 @@ public class PostController : ControllerBase
             
     }
 
+    [Authorize]
+    [HttpPut("Update")]
+    public IActionResult Update([FromForm] PutPostDTORequest request)
+    {
+        var userIdString = User.FindFirst("UserId")?.Value;
 
+        if (string.IsNullOrEmpty(userIdString))
+        {
+            return Unauthorized("Token inválido o sin UserId.");
+        }
+
+        int userId = int.Parse(userIdString);
+
+        string host = "http://localhost:5029";
+        string rute = "wwwroot/photo/post/";
+
+        Post post = this.df.PostDAOFactory().ExistPost(request.id);
+        
+        if (post == null)
+        {
+            return BadRequest(new PostResponseDTOCommon
+            {
+                success=false,
+                message="Post no encontrado"
+            });
+        }
+
+        if(request.description != null)
+        {
+            post.Description = request.description;
+        }
+
+        if(request.postImage != null)
+        {
+            (string PathCompleto, string nombreArchivo) = this.image.GetPath(request.postImage, rute);
+
+            try
+            {
+                this.image.SaveFile(request.postImage, PathCompleto);
+                post.PostImage = $"{host}/photo/post/{nombreArchivo}";
+
+            }
+            catch
+            {
+                return BadRequest(new PostResponseDTOCommon
+                {
+                    success=false,
+                    message = "Error al guardar"
+                });
+        
+                
+            }
+        }
+
+        this.df.PostDAOFactory().Save(post);
+        return Ok(new GetPostDTOResponse
+        {
+            idOwner = post.GetUserId(),
+            imgOwner = post.GetUserName(),
+            nameOwner = post.GetAvatar(),
+            body = post.Description,
+            image = post.PostImage,
+            countLove = post.GetCountLike(),
+            countAngry = post.GetCountAngry(),
+            countComments = post.GetCountComment(),
+            id = post.Id
+        });
+
+    }
+
+    [Authorize]
+    [HttpDelete("{idPost}")]
+    public IActionResult Delete (int idPost)
+    {
+        var userIdString = User.FindFirst("UserId")?.Value;
+
+        if (string.IsNullOrEmpty(userIdString))
+        {
+            return Unauthorized("Token inválido o sin UserId.");
+        }
+
+        int userId = int.Parse(userIdString);
+
+        bool isDelete = this.df.PostDAOFactory().DeletePost(userId,idPost);
+
+        if (!isDelete)
+        {
+            return BadRequest(new PostResponseDTOCommon
+            {
+                success=false,
+                message="No se pudo eliminar el post. Post no encontrado"
+            });
+        }
+
+        return Ok(new PostResponseDTOCommon
+        {
+            success=true,
+            message="El post se elimino correctamente"
+        });
+
+        
+        
+
+
+        
+
+        
+
+
+    }
 
 
 };
