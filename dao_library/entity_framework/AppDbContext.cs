@@ -6,7 +6,6 @@ public class AppDbContext : DbContext
 
     public DbSet<Person> Persons { get; set; }
     public DbSet<User> Users { get; set; }
-    public DbSet<Rol> Rols { get; set; }
     public DbSet<Post> Posts { get; set; }
     public DbSet<Comment> Comments{ get; set; }
     public DbSet<Follower> Followers { get; set; }
@@ -26,7 +25,7 @@ public class AppDbContext : DbContext
        
         modelBuilder.Entity<Post>()
             .HasMany(p => p.Reactions)
-            .WithOne(r => r.Posts)
+            .WithOne(r => r.Post)
             .OnDelete(DeleteBehavior.Cascade);
 
 
@@ -56,7 +55,7 @@ public class AppDbContext : DbContext
 
         
         modelBuilder.Entity<Reaction>()
-            .HasOne(r => r.Posts) // ojo, tu propiedad se llama Posts, debería ser Post
+            .HasOne(r => r.Post) 
             .WithMany(p => p.Reactions)
             .OnDelete(DeleteBehavior.Cascade);
 

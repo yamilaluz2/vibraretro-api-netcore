@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing.Internal;
 using BCrypt.Net;
 using Microsoft.AspNetCore.Authorization;
-using api_VibraRetro.service.interfaces;
+
 
 namespace api_VibraRetro.Controllers;
 
@@ -21,21 +21,14 @@ public class UserController : ControllerBase
     private IToken tokenService;
     private readonly ILogger<UserController> _logger;
 
-    private readonly IUserCounter _counter;
+    
 
-    public UserController(
-        ILogger<UserController> logger,
-        DAOFactory df,
-        IFile image,
-        IToken token,
-        IUserCounter counter
-    )
+    public UserController(ILogger<UserController> logger,DAOFactory df,IFile image,IToken token)
     {
         _logger = logger;
         this.df = df;
         this.image = image;
         this.tokenService = token;
-        _counter = counter;
     }
 
 
@@ -92,16 +85,14 @@ public class UserController : ControllerBase
                 "- Al menos un número\n" +
                 "- Al menos un símbolo"
             });
-        }
-        Rol rol = new Rol();
-        
+        }        
 
         User usuario = new User
         {
             Name = request.name,
             Mail = request.mail,
             UserName = request.userName,
-            RolUser = rol
+            RolUser = Rol.Administrador
 
         };
 
@@ -125,10 +116,9 @@ public class UserController : ControllerBase
 
 
     }
-    
+
 
     [HttpPost("login")]
-
     public IActionResult Login([FromBody] PostLoginDTORequest request)
     {
         User usuario = this.df.UserDAOFactory().ExisteMail(request.mail);
@@ -138,42 +128,84 @@ public class UserController : ControllerBase
             return Unauthorized(new PostLoginDTOResponse
             {
                 success = false,
-                message= "Usuario incorrecto",
+                message = "Usuario incorrecto",
                 token = null,
-                idUser=null
+                idUser = null
             });
         }
+
         bool resultado = usuario.VerifyPassword(request.password);
+
         if (!resultado)
         {
             return Unauthorized(new PostLoginDTOResponse
             {
                 success = false,
-                message= "Contraseña incorrecta",
+                message = "Contraseña incorrecta",
                 token = null,
-                idUser=null
+                idUser = null
             });
         }
-        string tokenUser = this.tokenService.GenerateToken(usuario);
 
         if (usuario.State)
         {
+            Ban? banUser = this.df.BanDAOFactory().SearchBan(usuario.Id);
             return BadRequest(new CommonDTOResponse
-                {
-                    success= false,
-                    message= "El Usuario se encuentra Bloqueado"
-                });
+            {
+                success = false,
+                message = $"El usuario se encuentra bloqueado por {banUser.Reason}"
+            });
         }
+
         
+        if (request.isDashBoard && usuario.RolUser != Rol.Administrador)
+        {
+            return Unauthorized(new PostLoginDTOResponse
+            {
+                success = false,
+                message = "Solo administradores pueden acceder al dashboard",
+                token = null,
+                idUser = null
+            });
+        }
+
+        var counter = SingletonCounter.GetInstance();
+        counter.UserLoggedIn();
+
+        string tokenUser = this.tokenService.GenerateToken(usuario);
+
         return Ok(new PostLoginDTOResponse
         {
-            success= true,
-            message="login exitoso",
+            success = true,
+            message = "Login exitoso",
             token = tokenUser,
             idUser = usuario.Id
         });
-       
     }
+
+    [Authorize]
+    [HttpPost("logout")]
+    public IActionResult Logout()
+    {
+        var userIdString = User.FindFirst("UserId")?.Value;
+
+        if (string.IsNullOrEmpty(userIdString))
+        {
+            return Unauthorized("Token inválido o sin UserId.");
+        }
+
+        int userId = int.Parse(userIdString);
+
+        var counter = SingletonCounter.GetInstance();
+        counter.UserLoggedOut();
+
+        return Ok(new CommonDTOResponse
+        { 
+            success = true, 
+            message = "Logout exitoso" 
+        });
+    }
+
 
 
 
@@ -347,10 +379,10 @@ public class UserController : ControllerBase
     }
 
 
-    [Authorize]
-    [HttpGet("GetcountUser")]
+    [Authorize(Roles = "Administrador")]
+    [HttpGet("Getcounter")]
 
-    public IActionResult GetcountUser ()
+    public IActionResult Getcounter ()
     {
         var userIdString = User.FindFirst("UserId")?.Value;
 
@@ -361,18 +393,21 @@ public class UserController : ControllerBase
 
         int userId = int.Parse(userIdString);
 
-        int countUser = this.df.UserDAOFactory().CountUser(userId);
-        
+        int countUser = this.df.UserDAOFactory().CountUser();
+
+        var counter = SingletonCounter.GetInstance();
+        int countLogged = counter.GetActiveUsers();
 
         return Ok(new GetCountUserDTOResponse
         {
-            count = countUser
+            countUser = countUser,
+            countLogged = countLogged
         });
 
     }
 
 
-    [Authorize]
+    [Authorize(Roles = "Administrador")]
     [HttpGet("GetUser")]
 
     public IActionResult GetUser ([FromQuery] GetUserDashboardDTOrequest request)
@@ -386,12 +421,10 @@ public class UserController : ControllerBase
 
         int userId = int.Parse(userIdString);
 
-        int countUser = this.df.UserDAOFactory().CountUser(userId);
-
         int pageSize = 10;
         
 
-        List<User> listUser= this.df.UserDAOFactory().GetUser(request.pageNumber,pageSize);
+        List<User> listUser= this.df.UserDAOFactory().GetUser(request.pageNumber,pageSize,request.filter);
 
         var listaDTO = listUser.Select(u => new GetUserDashboardDTOResponse
         {
@@ -408,10 +441,57 @@ public class UserController : ControllerBase
 
     }
 
+    [Authorize(Roles = "Administrador")]
+    [HttpPut("UpdateRol")]
+    public IActionResult UpdateRol([FromBody] PutDTOUpdateRolRequest request)
+    {
+        
+        var userIdString = User.FindFirst("UserId")?.Value;
+        if (string.IsNullOrEmpty(userIdString))
+        {
+            return Unauthorized("Token inválido o sin UserId.");
+        }
 
-    
+        int userId = int.Parse(userIdString);
 
-    
+        
+        User user = this.df.UserDAOFactory().ExisteId(request.userId);
+        if (user == null)
+        {
+            return BadRequest(new CommonDTOResponse
+            {
+                success = false,
+                message = "No se encontró el Usuario"
+            });
+        }
+
+        
+        if (string.Equals(user.RolUser.ToString(), request.role, StringComparison.OrdinalIgnoreCase))
+        {
+            return BadRequest(new CommonDTOResponse
+            {
+                success = false,
+                message = "El rol ingresado es igual al rol actual del usuario."
+            });
+        }
+
+        
+        user.RolUser = Enum.Parse<Rol>(request.role, ignoreCase: true);
+
+        
+        this.df.UserDAOFactory().save(user);
+
+        return Ok(new CommonDTOResponse
+        {
+            success = true,
+            message = $"El rol del usuario {user.UserName} se actualizó a {user.RolUser} correctamente."
+        });
+    }
+
+
+
+
+
 
 };
 

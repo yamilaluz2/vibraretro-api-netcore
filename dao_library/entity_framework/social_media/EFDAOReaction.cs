@@ -26,8 +26,8 @@ public void ApplyReaction(Reaction likePost)
     Reaction? reaction = dbContext.Reactions
         .Where(r => r.Creator != null 
                     && r.Creator.Id == userId 
-                    && r.Posts != null 
-                    && r.Posts.Id == postId)
+                    && r.Post != null 
+                    && r.Post.Id == postId)
         .FirstOrDefault();
 
     return reaction;

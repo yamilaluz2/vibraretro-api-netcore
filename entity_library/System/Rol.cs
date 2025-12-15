@@ -1,7 +1,5 @@
-public class Rol
+public enum Rol
 {
-    private int id;
-    public int Id{ get; set; }
-    private string name = "Usuario";
-    public string Name {get { return name; } set{ name = value; }}
+    Administrador = 1,
+    Usuario = 2
 }

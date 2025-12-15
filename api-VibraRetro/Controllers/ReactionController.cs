@@ -77,7 +77,7 @@ public class ReactionController : ControllerBase
         Reaction likePost = new Reaction
             {
                 Creator = usuario,
-                Posts = post,
+                Post = post,
                 ReactionType= reactionType
             };
 

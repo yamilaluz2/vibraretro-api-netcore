@@ -16,21 +16,6 @@ namespace dao_library.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "Rols",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Rols", x => x.Id);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
                 name: "Persons",
                 columns: table => new
                 {
@@ -50,17 +35,12 @@ namespace dao_library.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     CoverPhoto = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    RolUserId = table.Column<int>(type: "int", nullable: true),
+                    RolUser = table.Column<int>(type: "int", nullable: true),
                     State = table.Column<bool>(type: "tinyint(1)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Persons", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Persons_Rols_RolUserId",
-                        column: x => x.RolUserId,
-                        principalTable: "Rols",
-                        principalColumn: "Id");
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -70,7 +50,7 @@ namespace dao_library.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    UserId = table.Column<int>(type: "int", nullable: true),
+                    UserId = table.Column<int>(type: "int", nullable: false),
                     Reason = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     StartDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
@@ -89,7 +69,8 @@ namespace dao_library.Migrations
                         name: "FK_Bans_Persons_UserId",
                         column: x => x.UserId,
                         principalTable: "Persons",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -109,12 +90,14 @@ namespace dao_library.Migrations
                         name: "FK_Followers_Persons_FollowedUserId",
                         column: x => x.FollowedUserId,
                         principalTable: "Persons",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Followers_Persons_FollowerUserId",
                         column: x => x.FollowerUserId,
                         principalTable: "Persons",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -128,7 +111,7 @@ namespace dao_library.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     PostImage = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    CreatorId = table.Column<int>(type: "int", nullable: true)
+                    CreatorId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -137,7 +120,8 @@ namespace dao_library.Migrations
                         name: "FK_Posts_Persons_CreatorId",
                         column: x => x.CreatorId,
                         principalTable: "Persons",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -159,12 +143,14 @@ namespace dao_library.Migrations
                         name: "FK_Comments_Persons_CreatorId",
                         column: x => x.CreatorId,
                         principalTable: "Persons",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Comments_Posts_PostId",
                         column: x => x.PostId,
                         principalTable: "Posts",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -175,7 +161,7 @@ namespace dao_library.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     CreatorId = table.Column<int>(type: "int", nullable: true),
-                    PostsId = table.Column<int>(type: "int", nullable: true),
+                    PostId = table.Column<int>(type: "int", nullable: true),
                     ReactionType = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -185,12 +171,14 @@ namespace dao_library.Migrations
                         name: "FK_Reactions_Persons_CreatorId",
                         column: x => x.CreatorId,
                         principalTable: "Persons",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Reactions_Posts_PostsId",
-                        column: x => x.PostsId,
+                        name: "FK_Reactions_Posts_PostId",
+                        column: x => x.PostId,
                         principalTable: "Posts",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -225,11 +213,6 @@ namespace dao_library.Migrations
                 column: "FollowerUserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Persons_RolUserId",
-                table: "Persons",
-                column: "RolUserId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Posts_CreatorId",
                 table: "Posts",
                 column: "CreatorId");
@@ -240,9 +223,9 @@ namespace dao_library.Migrations
                 column: "CreatorId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Reactions_PostsId",
+                name: "IX_Reactions_PostId",
                 table: "Reactions",
-                column: "PostsId");
+                column: "PostId");
         }
 
         /// <inheritdoc />
@@ -265,9 +248,6 @@ namespace dao_library.Migrations
 
             migrationBuilder.DropTable(
                 name: "Persons");
-
-            migrationBuilder.DropTable(
-                name: "Rols");
         }
     }
 }

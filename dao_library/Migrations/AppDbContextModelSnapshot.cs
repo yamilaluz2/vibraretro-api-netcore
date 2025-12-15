@@ -44,7 +44,7 @@ namespace dao_library.Migrations
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<int?>("UserId")
+                    b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -173,7 +173,7 @@ namespace dao_library.Migrations
                     b.Property<int?>("CreatorId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("PostsId")
+                    b.Property<int?>("PostId")
                         .HasColumnType("int");
 
                     b.Property<int>("ReactionType")
@@ -183,26 +183,9 @@ namespace dao_library.Migrations
 
                     b.HasIndex("CreatorId");
 
-                    b.HasIndex("PostsId");
+                    b.HasIndex("PostId");
 
                     b.ToTable("Reactions");
-                });
-
-            modelBuilder.Entity("Rol", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Rols");
                 });
 
             modelBuilder.Entity("User", b =>
@@ -219,7 +202,7 @@ namespace dao_library.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<int?>("RolUserId")
+                    b.Property<int?>("RolUser")
                         .HasColumnType("int");
 
                     b.Property<bool>("State")
@@ -228,8 +211,6 @@ namespace dao_library.Migrations
                     b.Property<string>("UserName")
                         .IsRequired()
                         .HasColumnType("longtext");
-
-                    b.HasIndex("RolUserId");
 
                     b.HasDiscriminator().HasValue("User");
                 });
@@ -242,7 +223,9 @@ namespace dao_library.Migrations
 
                     b.HasOne("User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Admin");
 
@@ -301,23 +284,14 @@ namespace dao_library.Migrations
                         .HasForeignKey("CreatorId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("Post", "Posts")
+                    b.HasOne("Post", "Post")
                         .WithMany("Reactions")
-                        .HasForeignKey("PostsId")
+                        .HasForeignKey("PostId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Creator");
 
-                    b.Navigation("Posts");
-                });
-
-            modelBuilder.Entity("User", b =>
-                {
-                    b.HasOne("Rol", "RolUser")
-                        .WithMany()
-                        .HasForeignKey("RolUserId");
-
-                    b.Navigation("RolUser");
+                    b.Navigation("Post");
                 });
 
             modelBuilder.Entity("Post", b =>

@@ -57,21 +57,28 @@ public class EFDAOUser : DAOUser
         return usuarios;
     }
 
-    
-        
 
-        
-    
-
-    public int CountUser(int userId)
+    public int CountUser()
     {
         int totalUser = dbContext.Users.Count();
         return totalUser;
     }
 
-    public List<User> GetUser(int pageNumber, int pageSize)
+    public List<User> GetUser(int pageNumber, int pageSize, string filter)
     {
-        List<User> usuarios = dbContext.Users
+        var query = dbContext.Users.AsQueryable();
+
+        
+        if (filter == "user")
+        {
+            query = query.Where(u => u.RolUser == Rol.Usuario);
+        }
+        else if (filter == "admin")
+        {
+            query = query.Where(u => u.RolUser == Rol.Administrador);
+        }
+
+        var usuarios = query
             .OrderBy(u => u.UserName)
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)

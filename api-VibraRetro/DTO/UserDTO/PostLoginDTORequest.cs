@@ -2,4 +2,5 @@ public class PostLoginDTORequest
 {
     public required string mail { get; set; }
     public required string password { get; set; }
+    public bool isDashBoard {get;set;}
 }

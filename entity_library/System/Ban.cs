@@ -3,8 +3,8 @@ public class Ban
     private Int32 id; 
     public Int32 Id { get { return id; } set { id = value; } }
 
-    private  User? user;
-    public  virtual User? User { get { return user;} set { user = value;} }
+    private  User user= null!;
+    public required virtual User User { get { return user;} set { user = value;} }
 
     private string? reason;
     public string? Reason { get { return reason; } set { reason = value; } }

@@ -15,7 +15,8 @@ public class JwtToken : IToken
     {
         List<Claim> claims = new List<Claim>
         {
-            new Claim("UserId", user.Id.ToString())
+            new Claim("UserId", user.Id.ToString()),
+            new Claim(ClaimTypes.Role, user.RolUser.ToString())
         };
 
         string? secretKey = this.config["Jwt:Key"];

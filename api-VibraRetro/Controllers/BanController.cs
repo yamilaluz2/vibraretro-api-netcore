@@ -19,7 +19,9 @@ public class BanController : ControllerBase
         this.tokenService = token;
     }
 
-    [Authorize]
+
+
+    [Authorize(Roles = "Administrador")]
     [HttpPost("ban")]
     public IActionResult Ban ([FromBody] PostBanDTORequest request)
     {
@@ -59,9 +61,68 @@ public class BanController : ControllerBase
         return BadRequest(new CommonDTOResponse
         {
             success=false,
-            message="usuario o admin no encontrado."
+            message="usuario o admin no encontrado.",
         });
     }
+
+
+    [Authorize(Roles = "Administrador")]
+    [HttpPost("Unban")]
+    public IActionResult UnBan([FromBody] PostUnBanDTORequest request)
+    {
+        var userIdString = User.FindFirst("UserId")?.Value;
+
+        if (string.IsNullOrEmpty(userIdString))
+        {
+            return Unauthorized("Token inválido o sin UserId.");
+        }
+
+        int userId = int.Parse(userIdString);
+
+        User admin = this.df.UserDAOFactory().ExisteId(userId);
+        User user = this.df.UserDAOFactory().ExisteId(request.userId);
+        if (admin == null || user == null)
+        {
+            return BadRequest(new CommonDTOResponse
+            {
+                success = false,
+                message = "usuario o admin no encontrado."
+            });
+        }
+
+        Ban? banUser = this.df.BanDAOFactory().SearchBan(request.userId);
+
+        if (banUser == null)
+        {
+            return BadRequest(new CommonDTOResponse
+            {
+                success = false,
+                message = "No se encotro registro de baneo de usuario"
+            });
+        }
+
+        bool isDelete = this.df.BanDAOFactory().DeleteBan(banUser);
+
+        if (isDelete)
+        {
+            user.State = false;
+            this.df.UserDAOFactory().save(user);
+            return Ok(new CommonDTOResponse
+            {
+                success = true,
+                message = "Usuario Desbaneado Correctamente."
+            });
+        }
+        return BadRequest(new CommonDTOResponse
+        {
+            success = false,
+            message = "Error en la operación."
+        });
+
+    }
+        
+    
+
 
 
 }

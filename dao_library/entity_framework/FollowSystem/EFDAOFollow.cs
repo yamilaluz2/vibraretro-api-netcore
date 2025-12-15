@@ -33,7 +33,7 @@ public class EFDAOFollow : DAOFollow
     public List<DTOUserFollowerResponse> buscarUsername(int userId, string? userName, string filtro, int pageNumber, int pageSize)
     {
         var query = dbContext.Users.AsQueryable();
-        query = query.Where(u => u.Id != userId && u.RolUser.Name != "administrador");
+        query = query.Where(u => u.Id != userId && u.RolUser != Rol.Administrador);
 
         if (!string.IsNullOrEmpty(userName))
         query = query.Where(u => u.UserName.StartsWith(userName));

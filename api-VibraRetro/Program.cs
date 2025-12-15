@@ -2,8 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using api_VibraRetro.service;
-using api_VibraRetro.service.interfaces;
+using System.Security.Claims;
+
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -60,8 +60,6 @@ builder.Services.AddScoped<DAOFactory, EFDAOFactory>();
 builder.Services.AddScoped<IFile, Photo>();
 builder.Services.AddScoped<IToken, JwtToken>();
 
-builder.Services.AddSingleton<IUserCounter, UserCounter>();
-
 
 builder.Services.AddCors(options =>
 {
@@ -94,7 +92,8 @@ builder.Services.AddAuthentication(options =>
         ValidAudience = jwtSettings["Audience"],
         IssuerSigningKey = new SymmetricSecurityKey(
             Encoding.UTF8.GetBytes(jwtSettings["Key"]!)
-        )
+        ),
+        RoleClaimType = ClaimTypes.Role
     };
 });
 

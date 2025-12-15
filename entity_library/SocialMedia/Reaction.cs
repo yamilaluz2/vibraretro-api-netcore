@@ -6,8 +6,8 @@ public class Reaction
     private User? creator;
     public virtual User? Creator { get { return creator; } set { creator = value; } }
 
-    private Post? posts;
-    public virtual Post? Posts { get { return posts; } set { posts = value; } }
+    private Post? post;
+    public virtual Post? Post { get { return post; } set { post = value; } }
 
     private ReactionType reactionType{get;set;}
     public virtual ReactionType ReactionType{ get {return reactionType;} set {reactionType=value;}}

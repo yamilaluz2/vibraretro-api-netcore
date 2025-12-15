@@ -14,9 +14,9 @@ public class User : Person
     private string? coverPhoto = "";
     public string? CoverPhoto { get { return coverPhoto; } set { coverPhoto = value; } }
 
-    private Rol? rolUser;
+    private Rol rolUser;
 
-    public virtual Rol? RolUser { get { return rolUser; } set { rolUser = value; } }
+    public virtual Rol RolUser { get { return rolUser; } set { rolUser = value; } }
 
     private bool state;
     public bool State { get; set; } = false;

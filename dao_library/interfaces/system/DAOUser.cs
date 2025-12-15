@@ -11,6 +11,6 @@ public interface DAOUser
 
     public List<User> buscarUsuario(int pageNumber, int pageSize);
 
-    int CountUser(int userId);
-    List<User> GetUser(int pageNumber, int pageSize);
+    int CountUser();
+    List<User> GetUser(int pageNumber, int pageSize, string filter);
 }

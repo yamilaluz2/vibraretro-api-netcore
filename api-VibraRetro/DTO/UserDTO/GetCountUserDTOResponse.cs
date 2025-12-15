@@ -1,4 +1,5 @@
 public class GetCountUserDTOResponse
 {   
-    public int count {get;set;}
+    public int countUser {get;set;}
+    public int countLogged{get;set;}
 }
